@@ -232,6 +232,11 @@ public class HibNodeToken implements NodeToken
 
   private class HibTokenEnv implements Env
   {
+    public HibTokenEnv()
+    {
+      // Default constructor
+    }
+
     private boolean isAttributeSetLocal ()
     {
       return HibNodeToken.this.equals( attrSetToken );
@@ -372,9 +377,9 @@ public class HibNodeToken implements NodeToken
     final HibNodeToken other = (HibNodeToken)obj;
     if ( id == null )
     {
-      if ( other.id != null ) return false;
+      if ( other.getId() != null ) return false;
     }
-    else if ( !id.equals( other.id ) ) return false;
+    else if ( !id.equals( other.getId() ) ) return false;
     return true;
   }
 }
