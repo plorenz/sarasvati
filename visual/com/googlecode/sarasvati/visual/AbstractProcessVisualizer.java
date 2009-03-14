@@ -79,9 +79,9 @@ public abstract class AbstractProcessVisualizer
    */
   public abstract Session getSession ();
 
-  public ProcessTreeNodeWidgetFactory getWidgetFactory ()
+  public ProcessLookAndFeel getWidgetFactory ()
   {
-    return DefaultProcessTreeNodeWidgetFactory.INSTANCE;
+    return DefaultProcessLookAndFeel.INSTANCE;
   }
 
   @SuppressWarnings("unchecked")

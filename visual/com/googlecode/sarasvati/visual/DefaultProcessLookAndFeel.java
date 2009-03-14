@@ -18,6 +18,7 @@
  */
 package com.googlecode.sarasvati.visual;
 
+import javax.swing.Icon;
 import javax.swing.JLabel;
 
 import org.netbeans.api.visual.widget.ComponentWidget;
@@ -25,8 +26,8 @@ import org.netbeans.api.visual.widget.Widget;
 
 import com.googlecode.sarasvati.visual.icon.DefaultNodeIcon;
 import com.googlecode.sarasvati.visual.icon.TaskIcon;
-import com.googlecode.sarasvati.visual.process.ProcessTreeNode;
 import com.googlecode.sarasvati.visual.process.SarasvatiProcessScene;
+import com.googlecode.sarasvati.visual.process.VisualProcessNode;
 
 /**
  * Generates widgets using a TaskIcon for nodes of type 'task', and DefaultNodeIcon
@@ -34,24 +35,47 @@ import com.googlecode.sarasvati.visual.process.SarasvatiProcessScene;
  *
  * @author Paul Lorenz
  */
-public class DefaultProcessTreeNodeWidgetFactory implements ProcessTreeNodeWidgetFactory
+public class DefaultProcessLookAndFeel implements ProcessLookAndFeel
 {
-  public static final DefaultProcessTreeNodeWidgetFactory INSTANCE = new DefaultProcessTreeNodeWidgetFactory();
+  public static final DefaultProcessLookAndFeel INSTANCE = new DefaultProcessLookAndFeel( false, true );
+
+  protected boolean drawSelfArcs;
+  protected boolean drawArcLabels;
+
+  public DefaultProcessLookAndFeel (boolean drawSelfArcs, boolean drawArcLabels)
+  {
+    this.drawSelfArcs = drawSelfArcs;
+    this.drawArcLabels = drawArcLabels;
+  }
 
   @Override
-  public Widget newWidget (ProcessTreeNode node, SarasvatiProcessScene scene)
+  public boolean drawArcLabels ()
   {
-    JLabel label = null;
+    return drawArcLabels;
+  }
+
+  @Override
+  public boolean drawSelfArcs ()
+  {
+    return drawSelfArcs;
+  }
+
+  @Override
+  public Widget newWidget (VisualProcessNode node, SarasvatiProcessScene scene)
+  {
+    Icon icon = null;
 
     if ( "task".equals( node.getNode().getType() ) )
     {
-      label =  new JLabel( new TaskIcon( node.getNode(), node.getToken() ) );
+      icon = new TaskIcon( node.getNode(), node.getToken() );
     }
     else
     {
-      label = new JLabel( new DefaultNodeIcon( node.getNode(), node.getToken() ) );
+      icon = new DefaultNodeIcon( node.getNode(), node.getToken() );
     }
 
+    JLabel label = new JLabel( icon );
+    label.setSize( icon.getIconWidth(), icon.getIconHeight() );
     return new ComponentWidget( scene, label );
   }
 }

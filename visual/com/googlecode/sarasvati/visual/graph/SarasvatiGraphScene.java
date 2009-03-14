@@ -18,55 +18,38 @@
 */
 package com.googlecode.sarasvati.visual.graph;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Point;
 
+import org.netbeans.api.visual.layout.LayoutFactory.ConnectionWidgetLayoutAlignment;
+import org.netbeans.api.visual.widget.ConnectionWidget;
+import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Widget;
 
 import com.googlecode.sarasvati.Arc;
 import com.googlecode.sarasvati.Graph;
 import com.googlecode.sarasvati.Node;
-import com.googlecode.sarasvati.visual.NodeWidgetFactory;
+import com.googlecode.sarasvati.visual.GraphLookAndFeel;
 import com.googlecode.sarasvati.visual.common.GraphSceneImpl;
 
 public class SarasvatiGraphScene extends GraphSceneImpl<Node, Arc>
 {
-  protected Graph graph;
-  protected NodeWidgetFactory widgetFactory;
-  protected GraphTree graphTree;
-  protected boolean showSelfArcs;
+  protected GraphLookAndFeel lookAndFeel;
 
-  public SarasvatiGraphScene (Graph graph, NodeWidgetFactory widgetFactory)
-  {
-    this( graph, widgetFactory, false );
-  }
+  protected static final Font ARC_LABEL_FONT = Font.decode( "serif bold 11" );
 
-  public SarasvatiGraphScene (Graph graph, NodeWidgetFactory widgetFactory, boolean showSelfArcs)
+  public SarasvatiGraphScene (Graph graph, GraphLookAndFeel lookAndFeel)
   {
-    this.widgetFactory = widgetFactory;
-    this.showSelfArcs = showSelfArcs;
+    this.lookAndFeel = lookAndFeel;
 
     if ( graph != null )
     {
-      for ( Node ref : graph.getNodes() )
-      {
-        addNode( ref );
-      }
-
-      for ( Arc arc : graph.getArcs() )
-      {
-        if ( showSelfArcs || !arc.getStartNode().equals( arc.getEndNode() ) )
-        {
-          addEdge( arc );
-          setEdgeSource( arc, arc.getStartNode() );
-          setEdgeTarget( arc, arc.getEndNode() );
-        }
-      }
-
-      graphTree = new GraphTree( graph );
-
+      GraphTree graphTree = new GraphTree( graph );
       for ( Node node : graph.getNodes() )
       {
-        Widget widget = findWidget( node );
+        Widget widget = addNode( node );
+
         GraphTreeNode treeNode = graphTree.getTreeNode( node );
         Point origin = new Point( treeNode.getOriginX(), treeNode.getOriginY() );
         widget.setPreferredLocation( origin );
@@ -75,10 +58,23 @@ public class SarasvatiGraphScene extends GraphSceneImpl<Node, Arc>
 
       for ( Arc arc : graph.getArcs() )
       {
-        Widget widget = findWidget( arc );
-        if ( widget != null )
+        if ( lookAndFeel.drawSelfArcs() || !arc.getStartNode().equals( arc.getEndNode() ) )
         {
+          ConnectionWidget widget = (ConnectionWidget)addEdge( arc );
+          setEdgeSource( arc, arc.getStartNode() );
+          setEdgeTarget( arc, arc.getEndNode() );
+
           widget.resolveBounds( null, null );
+
+          if ( lookAndFeel.drawArcLabels() && arc.getName() != null )
+          {
+            LabelWidget arcLabel = new LabelWidget( this, arc.getName() );
+            arcLabel.setFont( ARC_LABEL_FONT );
+            arcLabel.setForeground( Color.BLUE );
+            arcLabel.setOpaque( true );
+            widget.addChild( arcLabel );
+            widget.setConstraint( arcLabel, ConnectionWidgetLayoutAlignment.CENTER, 30 );
+          }
         }
       }
 
@@ -86,19 +82,9 @@ public class SarasvatiGraphScene extends GraphSceneImpl<Node, Arc>
     }
   }
 
-  public Graph getGraph ()
-  {
-    return graph;
-  }
-
-  public GraphTree getGraphTree ()
-  {
-    return graphTree;
-  }
-
   @Override
   protected Widget widgetForNode (Node node)
   {
-    return widgetFactory.newWidget( node, this );
+    return lookAndFeel.newWidget( node, this );
   }
 }

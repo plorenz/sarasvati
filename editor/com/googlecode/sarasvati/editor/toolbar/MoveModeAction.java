@@ -16,14 +16,29 @@
 
     Copyright 2008 Paul Lorenz
  */
-package com.googlecode.sarasvati.visual;
+package com.googlecode.sarasvati.editor.toolbar;
 
-import org.netbeans.api.visual.widget.Widget;
+import java.awt.event.ActionEvent;
 
-import com.googlecode.sarasvati.visual.process.ProcessTreeNode;
-import com.googlecode.sarasvati.visual.process.SarasvatiProcessScene;
+import javax.swing.AbstractAction;
 
-public interface ProcessTreeNodeWidgetFactory
+import com.googlecode.sarasvati.editor.GraphEditor;
+
+public class MoveModeAction extends AbstractAction
 {
-  Widget newWidget (ProcessTreeNode node, SarasvatiProcessScene scene);
+  private static final long serialVersionUID = 1L;
+
+  protected GraphEditor     editor;
+
+  public MoveModeAction (GraphEditor editor)
+  {
+    super( "Move" );
+    this.editor = editor;
+  }
+
+  @Override
+  public void actionPerformed (ActionEvent e)
+  {
+    editor.modeMove();
+  }
 }

@@ -33,19 +33,20 @@ import com.googlecode.sarasvati.visual.util.ConvertUtil;
 
 public class PathTrackingConnectionWidget extends ConnectionWidget
 {
-  ShortestPathRouterAdapter router;
+  protected ShortestPathRouterAdapter router;
 
-  Point start = null;
-  Point end   = null;
+  protected Point start = null;
+  protected Point end   = null;
+
+  protected Path oldPath = null;
+  protected Path path;
+  protected boolean resetControlPoints = false;
 
   public PathTrackingConnectionWidget (ShortestPathRouterAdapter router, Scene scene)
   {
     super( scene );
     this.router = router;
   }
-
-  protected Path path;
-  protected boolean resetControlPoints = false;
 
   public void ensurePathCurrent ()
   {
@@ -88,7 +89,9 @@ public class PathTrackingConnectionWidget extends ConnectionWidget
 
     PointList pointList = path.getPoints();
 
-    List<Point> route = new ArrayList<Point>( pointList.size() );
+    // Route is apparently not cache-able, b/c when I try,
+    // connections no longer route properly.
+    ArrayList<Point> route = new ArrayList<Point>( pointList.size() );
 
     for ( int i = 0; i < pointList.size(); i++ )
     {

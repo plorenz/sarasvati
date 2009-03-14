@@ -15,20 +15,40 @@
     License along with Sarasvati.  If not, see <http://www.gnu.org/licenses/>.
 
     Copyright 2008 Paul Lorenz
- */
-package com.googlecode.sarasvati.visual;
+*/
+package com.googlecode.sarasvati.visual.util;
 
+import org.netbeans.api.visual.model.ObjectScene;
 import org.netbeans.api.visual.widget.Widget;
 
+import com.googlecode.sarasvati.Arc;
 import com.googlecode.sarasvati.Node;
-import com.googlecode.sarasvati.visual.graph.SarasvatiGraphScene;
+import com.googlecode.sarasvati.adapter.Function;
+import com.googlecode.sarasvati.visual.GraphToImageMap;
 
-/**
- * Generates an appropriate {@link Widget} for the given {@link Node}.
- *
- * @author Paul Lorenz
- */
-public interface NodeWidgetFactory
+public class HrefFunctionAdapter implements Function<String,Widget>
 {
-  Widget newWidget (Node node, SarasvatiGraphScene scene);
+  protected GraphToImageMap imageMapHelper;
+
+  public HrefFunctionAdapter (GraphToImageMap imageMapHelper)
+  {
+    this.imageMapHelper = imageMapHelper;
+  }
+
+  @Override
+  public String apply (Widget widget)
+  {
+    Object o = ((ObjectScene)widget.getScene()).findObject( widget );
+
+    if ( o instanceof Node )
+    {
+      return imageMapHelper.hrefForNode( (Node)o );
+    }
+    else if ( o instanceof Arc )
+    {
+      return imageMapHelper.hrefForArc( (Arc)o );
+    }
+
+    return null;
+  }
 }
