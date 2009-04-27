@@ -30,6 +30,9 @@ import com.googlecode.sarasvati.Graph;
 import com.googlecode.sarasvati.GraphProcess;
 import com.googlecode.sarasvati.Node;
 import com.googlecode.sarasvati.NodeToken;
+import com.googlecode.sarasvati.Token;
+import com.googlecode.sarasvati.TokenSet;
+import com.googlecode.sarasvati.TokenSetMember;
 import com.googlecode.sarasvati.load.AbstractGraphFactory;
 import com.googlecode.sarasvati.load.LoadException;
 import com.googlecode.sarasvati.load.NodeFactory;
@@ -151,5 +154,17 @@ public class MemGraphFactory extends AbstractGraphFactory<MemGraph>
     MemGraphProcess process = newProcess( graph );
     process.setParentToken( parentToken );
     return process;
+  }
+
+  @Override
+  public TokenSet newTokenSet (GraphProcess process, String name)
+  {
+    return new MemTokenSet( process, name );
+  }
+
+  @Override
+  public TokenSetMember newTokenSetMember (TokenSet tokenSet, Token token, int memberIndex)
+  {
+    return new MemTokenSetMember( tokenSet, token, memberIndex );
   }
 }

@@ -16,32 +16,37 @@
 
     Copyright 2008 Paul Lorenz
 */
-package com.googlecode.sarasvati.example.db;
+package com.googlecode.sarasvati.editor.menu;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
-import com.googlecode.sarasvati.Arc;
-import com.googlecode.sarasvati.Engine;
-import com.googlecode.sarasvati.NodeToken;
-import com.googlecode.sarasvati.hib.HibNode;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.KeyStroke;
 
-@Entity
-@DiscriminatorValue( "dump" )
-public class DumpNode extends HibNode
+import com.googlecode.sarasvati.editor.command.CommandStack;
+
+public class UndoAction extends AbstractAction
 {
-  @Override
-  public void execute (Engine engine, NodeToken token)
-  {
-    System.out.println( "Accepted into: " + getName() );
+  private static final long serialVersionUID = 1L;
 
-    if ( token.getProcess().getParentToken() != null )
-    {
-      engine.completeExecution( token, Arc.DEFAULT_ARC );
-    }
-    else
-    {
-      engine.completeAsynchronous( token, Arc.DEFAULT_ARC );
-    }
+  public UndoAction ()
+  {
+    super( "Undo" );
+
+    putValue( Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke( KeyEvent.VK_Z, KeyEvent.CTRL_MASK ) );
+    putValue( Action.MNEMONIC_KEY, KeyEvent.VK_U );
+  }
+
+  @Override
+  public void actionPerformed (ActionEvent e)
+  {
+    CommandStack.getCurrent().undo();
+  }
+
+  public void setName (String name)
+  {
+    putValue( Action.NAME, name );
   }
 }

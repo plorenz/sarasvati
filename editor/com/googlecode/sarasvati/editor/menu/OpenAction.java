@@ -32,12 +32,9 @@ public class OpenAction extends AbstractAction
 {
   private static final long serialVersionUID = 1L;
 
-  protected GraphEditor editor;
-
-  public OpenAction (GraphEditor editor)
+  public OpenAction ()
   {
     super( "Open" );
-    this.editor = editor;
 
     putValue( Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke( KeyEvent.VK_O, KeyEvent.CTRL_MASK ) );
     putValue( Action.MNEMONIC_KEY, KeyEvent.VK_O );
@@ -46,12 +43,17 @@ public class OpenAction extends AbstractAction
   @Override
   public void actionPerformed (ActionEvent e)
   {
+    GraphEditor editor = GraphEditor.getInstance();
+
     JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setCurrentDirectory( editor.getLastFile() );
+
     int retVal = fileChooser.showOpenDialog( editor.getMainWindow() );
 
     if ( retVal == JFileChooser.APPROVE_OPTION )
     {
-      editor.openProcessDefinition( fileChooser.getSelectedFile() );
+      editor.setLastFile( fileChooser.getSelectedFile() );
+      GraphEditor.getInstance().openProcessDefinition( fileChooser.getSelectedFile() );
     }
   }
 }

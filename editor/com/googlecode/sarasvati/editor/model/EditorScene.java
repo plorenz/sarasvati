@@ -38,6 +38,7 @@ import com.googlecode.sarasvati.editor.EditorMode;
 import com.googlecode.sarasvati.editor.GraphEditor;
 import com.googlecode.sarasvati.editor.NodePropertiesAction;
 import com.googlecode.sarasvati.editor.SceneAddNodeAction;
+import com.googlecode.sarasvati.editor.command.CommandStack;
 import com.googlecode.sarasvati.visual.common.GraphSceneImpl;
 import com.googlecode.sarasvati.visual.common.NodeDrawConfig;
 import com.googlecode.sarasvati.visual.common.PathTrackingConnectionWidget;
@@ -45,21 +46,26 @@ import com.googlecode.sarasvati.visual.icon.DefaultNodeIcon;
 
 public class EditorScene extends GraphSceneImpl<EditorGraphMember, EditorArc>
 {
-  protected GraphEditor editor;
-  protected EditorGraph graph;
+  protected final CommandStack commandStack;
+  protected final EditorGraph graph;
 
-  final private WidgetAction moveAction = ActionFactory.createAlignWithMoveAction( mainLayer, intrLayer, null );
-  final private WidgetAction connectAction = ActionFactory.createConnectAction( intrLayer, new SceneConnectProvider() );
-  final private WidgetAction reconnectAction = ActionFactory.createReconnectAction( new SceneReconnectProvider() );
+  private final WidgetAction moveAction = new MoveTrackAction( ActionFactory.createAlignWithMoveAction( mainLayer, intrLayer, null ) );
+  private final WidgetAction connectAction = ActionFactory.createConnectAction( intrLayer, new SceneConnectProvider() );
+  private final WidgetAction reconnectAction = ActionFactory.createReconnectAction( new SceneReconnectProvider() );
 
-  public EditorScene (GraphEditor editor, EditorGraph graph)
+  public EditorScene (EditorGraph graph)
   {
-    this.editor = editor;
     this.graph = graph;
+    this.commandStack = new CommandStack();
 
     getActions().addAction( SceneAddNodeAction.INSTANCE );
 
-    for ( EditorGraphMember member : graph.getMembers().values() )
+    for ( EditorGraphMember member : graph.getNodes() )
+    {
+      addNode( member );
+    }
+
+    for ( EditorGraphMember member : graph.getExternals() )
     {
       addNode( member );
     }
@@ -72,11 +78,20 @@ public class EditorScene extends GraphSceneImpl<EditorGraphMember, EditorArc>
     }
   }
 
+  public CommandStack getCommandStack ()
+  {
+    return commandStack;
+  }
+
+  public EditorGraph getGraph ()
+  {
+    return graph;
+  }
+
   public void modeAddNode ()
   {
-    for (Widget widget : mainLayer.getChildren() )
+    for ( Widget widget : mainLayer.getChildren() )
     {
-      widget.getActions().removeAction( moveAction );
       widget.getActions().addAction( connectAction );
     }
   }
@@ -86,7 +101,6 @@ public class EditorScene extends GraphSceneImpl<EditorGraphMember, EditorArc>
     for ( Widget widget : mainLayer.getChildren() )
     {
       widget.getActions().removeAction( connectAction );
-      widget.getActions().addAction( moveAction );
     }
   }
 
@@ -125,11 +139,9 @@ public class EditorScene extends GraphSceneImpl<EditorGraphMember, EditorArc>
     widget.setPreferredLocation( node.getOrigin() );
 
     widget.getActions().addAction( new NodePropertiesAction() );
-    if ( editor.getMode() == EditorMode.Move )
-    {
-      widget.getActions().addAction( moveAction );
-    }
-    else if ( editor.getMode() == EditorMode.AddNode )
+    widget.getActions().addAction( moveAction );
+
+    if ( GraphEditor.getInstance().getMode() == EditorMode.AddNode )
     {
       widget.getActions().addAction( connectAction );
     }

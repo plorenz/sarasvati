@@ -15,7 +15,7 @@
     License along with Sarasvati.  If not, see <http://www.gnu.org/licenses/>.
 
     Copyright 2008 Paul Lorenz
-*/
+ */
 
 package com.googlecode.sarasvati.xml;
 
@@ -23,95 +23,93 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
+import com.googlecode.sarasvati.util.SvUtil;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlExternalArc
 {
-  @XmlAttribute(name = "external", required = true)
-  protected String             external;
+  @XmlAttribute(name = "from", required = true)
+  protected String from;
 
-  @XmlAttribute(name = "instance", required = true)
-  protected String             instance;
+  @XmlAttribute(name = "external", required = false)
+  protected String external;
 
-  @XmlAttribute(name = "nodeName", required = true)
-  protected String             nodeName;
+  @XmlAttribute(name = "to", required = true)
+  protected String to;
 
   @XmlAttribute(name = "name", required = false)
-  protected String             name;
+  protected String name;
 
-  @XmlAttribute(name = "type", required = true)
-  protected XmlExternalArcType type;
+  public String getFrom()
+  {
+    return from;
+  }
 
-  public String getExternal ()
+  public void setFrom( String from )
+  {
+    this.from = from;
+  }
+
+  public String getExternal()
   {
     return external;
   }
 
-  public void setExternal (String external)
+  public void setExternal( String external )
   {
     this.external = external;
   }
 
-  public String getInstance ()
+  public String getTo()
   {
-    return instance;
+    return to;
   }
 
-  public void setInstance (String instance)
+  public void setTo( String to )
   {
-    this.instance = instance;
+    this.to = to;
   }
 
-  public String getNodeName ()
-  {
-    return nodeName;
-  }
-
-  public void setNodeName (String nodeName)
-  {
-    this.nodeName = nodeName;
-  }
-
-  public String getName ()
+  public String getName()
   {
     return name;
   }
 
-  public void setName (String name)
+  public void setName( String name )
   {
     this.name = name;
   }
 
-  public XmlExternalArcType getType ()
+  public boolean isToExternal ()
   {
-    return type;
-  }
-
-  public void setType (XmlExternalArcType type)
-  {
-    this.type = type;
+    return !SvUtil.isBlankOrNull( external );
   }
 
   @Override
-  public String toString ()
+  public String toString()
   {
-    StringBuilder buf = new StringBuilder ();
-    buf.append( "<externalArc external=\"" );
-    buf.append( external );
-    buf.append( "\" instance=\"" );
-    buf.append( instance );
-    buf.append( "\" nodeName=\"" );
-    buf.append( nodeName );
+    StringBuilder buf = new StringBuilder();
+    buf.append( "<arc from=\"" );
+    buf.append( from );
+    buf.append( "\"" );
 
-    if ( name != null )
+    if ( external != null )
+    {
+      buf.append( "external=\"" );
+      buf.append( external );
+      buf.append( "\"" );
+    }
+    buf.append( " to=\"" );
+    buf.append( to );
+
+    if (name != null)
     {
       buf.append( "\" name=\"" );
       buf.append( name );
+      buf.append( "\"" );
     }
 
-    buf.append( "\" type=\"" );
-    buf.append( type.name().toLowerCase() );
-
-    buf.append( "\"/>" );
+    buf.append( "/>" );
     return buf.toString();
   }
 }

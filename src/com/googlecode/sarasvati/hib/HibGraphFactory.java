@@ -35,6 +35,9 @@ import com.googlecode.sarasvati.Graph;
 import com.googlecode.sarasvati.GraphProcess;
 import com.googlecode.sarasvati.Node;
 import com.googlecode.sarasvati.NodeToken;
+import com.googlecode.sarasvati.Token;
+import com.googlecode.sarasvati.TokenSet;
+import com.googlecode.sarasvati.TokenSetMember;
 import com.googlecode.sarasvati.load.AbstractGraphFactory;
 import com.googlecode.sarasvati.load.LoadException;
 import com.googlecode.sarasvati.load.NodeFactory;
@@ -133,8 +136,7 @@ public class HibGraphFactory extends AbstractGraphFactory<HibGraph>
   {
     HibNodeRef nodeRef = (HibNodeRef)node;
 
-    String label = nodeRef.getInstance();
-    label = label == null || "".equals( label ) ? instanceName : instanceName + ":" + label;
+    String label = getInstance( nodeRef.getInstance(), instanceName );
 
     HibNodeRef newRef = new HibNodeRef( graph, nodeRef.getNode(), label );
     session.save( newRef );
@@ -208,7 +210,7 @@ public class HibGraphFactory extends AbstractGraphFactory<HibGraph>
   public HibGraphProcess newProcess (Graph graph)
   {
     HibGraphProcess process = new HibGraphProcess( (HibGraph)graph);
-    session.save(  process );
+    session.save( process );
     return process;
   }
 
@@ -217,7 +219,21 @@ public class HibGraphFactory extends AbstractGraphFactory<HibGraph>
   {
     HibGraphProcess process = new HibGraphProcess( (HibGraph)graph);
     process.setParentToken( parentToken );
-    session.save(  process );
+    session.save( process );
     return process;
+  }
+
+  @Override
+  public TokenSet newTokenSet (GraphProcess process, String name)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public TokenSetMember newTokenSetMember (TokenSet tokenSet, Token token, int memberIndex)
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

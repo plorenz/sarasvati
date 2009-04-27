@@ -15,7 +15,7 @@
     License along with Sarasvati.  If not, see <http://www.gnu.org/licenses/>.
 
     Copyright 2008 Paul Lorenz
-*/
+ */
 
 package com.googlecode.sarasvati.xml;
 
@@ -27,6 +27,7 @@ import java.io.Reader;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -48,14 +49,15 @@ public class XmlLoader
     loadSchema();
   }
 
-  public XmlLoader (String...extraPackages) throws JAXBException, LoadException
+  public XmlLoader (String... extraPackages) throws JAXBException,
+      LoadException
   {
     String packages = "com.googlecode.sarasvati.xml";
 
-    if ( extraPackages != null )
+    if (extraPackages != null)
     {
-      for ( String p : extraPackages )
-      packages += ":" + p;
+      for (String p : extraPackages)
+        packages += ":" + p;
     }
 
     this.context = JAXBContext.newInstance( packages );
@@ -64,34 +66,34 @@ public class XmlLoader
 
   private void loadSchema () throws LoadException
   {
-    InputStream is = getClass().getClassLoader().getResourceAsStream( "com/googlecode/sarasvati/ProcessDefinition.xsd" );
+    InputStream is = getClass().getClassLoader().getResourceAsStream(
+        "com/googlecode/sarasvati/ProcessDefinition.xsd" );
 
-    if ( is == null )
+    if (is == null)
     {
-      is = getClass().getClassLoader().getResourceAsStream( "/com/googlecode/sarasvati/ProcessDefinition.xsd" );
+      is = getClass().getClassLoader().getResourceAsStream(
+          "/com/googlecode/sarasvati/ProcessDefinition.xsd" );
     }
 
-    if ( is == null )
+    if (is == null)
     {
       throw new LoadException( "ProcessDefinition.xsd not found in classpath" );
     }
 
     try
     {
-      SchemaFactory factory = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
+      SchemaFactory factory = SchemaFactory
+          .newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
       schema = factory.newSchema( new StreamSource( is ) );
-    }
-    catch (SAXException se)
+    } catch (SAXException se)
     {
       throw new LoadException( "Failed to load schema", se );
-    }
-    finally
+    } finally
     {
       try
       {
         is.close();
-      }
-      catch ( IOException ioe )
+      } catch (IOException ioe)
       {
         // ignore
       }
@@ -102,27 +104,46 @@ public class XmlLoader
   {
     Unmarshaller u = context.createUnmarshaller();
     u.setSchema( schema );
-    u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+    u.setEventHandler( new javax.xml.bind.helpers.DefaultValidationEventHandler() );
     return u;
   }
 
-  public XmlProcessDefinition loadProcessDefinition (File file) throws JAXBException
+  protected Marshaller getMarshaller () throws JAXBException
   {
-    return (XmlProcessDefinition)getUnmarshaller().unmarshal( file );
+    Marshaller m = context.createMarshaller();
+    m.setSchema( schema );
+    m.setEventHandler( new javax.xml.bind.helpers.DefaultValidationEventHandler() );
+    m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+    return m;
   }
 
-  public XmlProcessDefinition loadProcessDefinition (InputStream in) throws JAXBException
+  public XmlProcessDefinition loadProcessDefinition (File file)
+      throws JAXBException
   {
-    return (XmlProcessDefinition)getUnmarshaller().unmarshal( in );
+    return (XmlProcessDefinition) getUnmarshaller().unmarshal( file );
   }
 
-  public XmlProcessDefinition loadProcessDefinition (Reader in) throws JAXBException
+  public XmlProcessDefinition loadProcessDefinition (InputStream in)
+      throws JAXBException
   {
-    return (XmlProcessDefinition)getUnmarshaller().unmarshal( in );
+    return (XmlProcessDefinition) getUnmarshaller().unmarshal( in );
   }
 
-  public XmlProcessDefinition loadProcessDefinition (InputSource in) throws JAXBException
+  public XmlProcessDefinition loadProcessDefinition (Reader in)
+      throws JAXBException
   {
-    return (XmlProcessDefinition)getUnmarshaller().unmarshal( in );
+    return (XmlProcessDefinition) getUnmarshaller().unmarshal( in );
+  }
+
+  public XmlProcessDefinition loadProcessDefinition (InputSource in)
+      throws JAXBException
+  {
+    return (XmlProcessDefinition) getUnmarshaller().unmarshal( in );
+  }
+
+  public void saveProcessDefinition (XmlProcessDefinition xmlProcDef, File file)
+      throws JAXBException
+  {
+    getMarshaller().marshal( xmlProcDef, file );
   }
 }

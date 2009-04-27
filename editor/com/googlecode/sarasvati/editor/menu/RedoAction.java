@@ -16,23 +16,37 @@
 
     Copyright 2008 Paul Lorenz
 */
-package com.googlecode.sarasvati.example.db;
+package com.googlecode.sarasvati.editor.menu;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
-import com.googlecode.sarasvati.Arc;
-import com.googlecode.sarasvati.Engine;
-import com.googlecode.sarasvati.NodeToken;
-import com.googlecode.sarasvati.hib.HibNode;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.KeyStroke;
 
-@Entity
-@DiscriminatorValue( "async" )
-public class AsyncNode extends HibNode
+import com.googlecode.sarasvati.editor.command.CommandStack;
+
+public class RedoAction extends AbstractAction
 {
-  @Override
-  public void execute (Engine engine, NodeToken token)
+  private static final long serialVersionUID = 1L;
+
+  public RedoAction ()
   {
-    engine.completeAsynchronous( token, Arc.DEFAULT_ARC );
+    super( "Redo" );
+
+    putValue( Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke( KeyEvent.VK_Y, KeyEvent.CTRL_MASK ) );
+    putValue( Action.MNEMONIC_KEY, KeyEvent.VK_R );
+  }
+
+  @Override
+  public void actionPerformed (ActionEvent e)
+  {
+    CommandStack.getCurrent().redo();
+  }
+
+  public void setName (String name)
+  {
+    putValue( Action.NAME, name );
   }
 }

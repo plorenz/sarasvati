@@ -17,14 +17,34 @@
     Copyright 2008 Paul Lorenz
 */
 
-package com.googlecode.sarasvati.xml;
+package com.googlecode.sarasvati.example.jdbc;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
-@XmlEnum(String.class)
-public enum XmlExternalArcType
+public class JdbcTestSetup
 {
-  @XmlEnumValue("in")   IN,
-  @XmlEnumValue ("out") OUT;
+  static
+  {
+    try
+    {
+      Class.forName( "org.postgresql.Driver" );
+    }
+    catch ( Exception e )
+    {
+      throw new ExceptionInInitializerError( e );
+    }
+  }
+
+  public static Connection openConnection ()
+  {
+    try
+    {
+      return DriverManager.getConnection( "jdbc:postgresql://localhost:5432/paul", "paul", "thesistest56" );
+    }
+    catch ( Exception e )
+    {
+      throw new RuntimeException( e );
+    }
+  }
 }

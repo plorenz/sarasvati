@@ -15,7 +15,7 @@
     License along with Sarasvati.  If not, see <http://www.gnu.org/licenses/>.
 
     Copyright 2008 Paul Lorenz
-*/
+ */
 
 package com.googlecode.sarasvati.xml;
 
@@ -30,36 +30,39 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlNode
 {
-  @XmlAttribute (name="name", required=true)
-  protected String name;
+  @XmlAttribute(name = "name", required = true)
+  protected String               name;
 
-  @XmlAttribute (name="isJoin", required=false)
-  protected Boolean join;
+  @XmlAttribute(name = "isJoin", required = false)
+  protected Boolean              join;
 
-  @XmlAttribute (name="type", required=false)
-  protected String type;
+  @XmlAttribute(name = "type", required = false)
+  protected String               type;
 
-  @XmlAttribute (name="isStart", required=false)
-  protected Boolean start;
+  @XmlAttribute(name = "isStart", required = false)
+  protected Boolean              start;
 
-  @XmlElement (name="guard", required=false)
-  protected String guard;
+  @XmlAttribute(name = "x", required = false)
+  protected Integer              x;
 
-  @XmlElement (name="arc", required=false)
-  protected List<XmlArc> arcs = new ArrayList<XmlArc>();
+  @XmlAttribute(name = "y", required = false)
+  protected Integer              y;
 
-  @XmlElement (name="externalArc", required=false)
-  protected List<XmlExternalArc> externalArcs = new ArrayList<XmlExternalArc>();
+  @XmlElement(name = "guard", required = false)
+  protected String               guard;
 
-  @XmlElement (name="custom")
-  protected XmlCustom custom;
+  @XmlElement(name = "arc", required = false)
+  protected List<XmlArc>         arcs         = new ArrayList<XmlArc>();
 
-  public String getName()
+  @XmlElement(name = "custom")
+  protected XmlCustom            custom;
+
+  public String getName ()
   {
     return name;
   }
 
-  public void setName( String name )
+  public void setName (String name)
   {
     this.name = name;
   }
@@ -69,22 +72,22 @@ public class XmlNode
     return join == null ? false : join;
   }
 
-  public Boolean getJoin()
+  public Boolean getJoin ()
   {
     return join;
   }
 
-  public void setJoin( Boolean join )
+  public void setJoin (Boolean join)
   {
     this.join = join;
   }
 
-  public String getType()
+  public String getType ()
   {
     return type;
   }
 
-  public void setType( String type )
+  public void setType (String type)
   {
     this.type = type;
   }
@@ -94,44 +97,54 @@ public class XmlNode
     return start == null ? false : start;
   }
 
-  public Boolean getStart()
+  public Boolean getStart ()
   {
     return start;
   }
 
-  public void setStart( Boolean start )
+  public void setStart (Boolean start)
   {
     this.start = start;
   }
 
-  public String getGuard()
+  public Integer getX ()
+  {
+    return x;
+  }
+
+  public void setX (Integer x)
+  {
+    this.x = x;
+  }
+
+  public Integer getY ()
+  {
+    return y;
+  }
+
+  public void setY (Integer y)
+  {
+    this.y = y;
+  }
+
+  public String getGuard ()
   {
     return guard;
   }
 
-  public void setGuard( String guard )
+  public void setGuard (String guard)
   {
     this.guard = guard;
   }
 
-  public List<XmlArc> getArcs()
+  public List<XmlArc> getArcs ()
   {
     return arcs;
   }
 
-  public void setArcs( List<XmlArc> arcs )
+  public void setArcs (List<XmlArc> arcs)
   {
     this.arcs = arcs;
-  }
-
-  public List<XmlExternalArc> getExternalArcs()
-  {
-    return externalArcs;
-  }
-
-  public void setExternalArcs( List<XmlExternalArc> externalArcs )
-  {
-    this.externalArcs = externalArcs;
   }
 
   public XmlCustom getCustom ()
@@ -156,21 +169,27 @@ public class XmlNode
     buf.append( type );
     buf.append( "\" isStart=\"" );
     buf.append( isStart() );
+
+    if (x != null)
+    {
+      buf.append( "\" x=\"" );
+      buf.append( getX() );
+    }
+    if (y != null)
+    {
+      buf.append( "\" y=\"" );
+      buf.append( y );
+    }
+
     buf.append( "\">\n" );
 
-    for ( XmlArc arc : arcs )
+    for (XmlArc arc : arcs)
     {
       buf.append( arc );
       buf.append( "\n" );
     }
 
-    for ( XmlExternalArc arc : externalArcs )
-    {
-      buf.append( arc );
-      buf.append( "\n" );
-    }
-
-    if (custom != null )
+    if (custom != null)
     {
       buf.append( custom );
       buf.append( "\n" );

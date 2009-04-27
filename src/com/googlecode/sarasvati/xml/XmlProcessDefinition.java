@@ -15,7 +15,7 @@
     License along with Sarasvati.  If not, see <http://www.gnu.org/licenses/>.
 
     Copyright 2008 Paul Lorenz
-*/
+ */
 
 package com.googlecode.sarasvati.xml;
 
@@ -28,15 +28,18 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement (name="process-definition")
+@XmlRootElement(name = "process-definition")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlProcessDefinition
 {
-  @XmlAttribute (name="name", required=true)
-  protected String name;
+  @XmlAttribute(name = "name", required = true)
+  protected String            name;
 
-  @XmlElement (name="node")
-  protected List<XmlNode> nodes = new ArrayList<XmlNode>();
+  @XmlElement(name = "node")
+  protected List<XmlNode>     nodes     = new ArrayList<XmlNode>();
+
+  @XmlElement(name = "external")
+  protected List<XmlExternal> externals = new ArrayList<XmlExternal>();
 
   public String getName ()
   {
@@ -58,17 +61,33 @@ public class XmlProcessDefinition
     this.nodes = nodes;
   }
 
+  public List<XmlExternal> getExternals ()
+  {
+    return externals;
+  }
+
+  public void setExternals (List<XmlExternal> externals)
+  {
+    this.externals = externals;
+  }
+
   @Override
   public String toString ()
   {
-    StringBuilder buf = new StringBuilder ();
+    StringBuilder buf = new StringBuilder();
     buf.append( "<workflow name=\"" );
     buf.append( getName() );
     buf.append( "\">\n" );
 
-    for ( XmlNode node : nodes )
+    for (XmlNode node : nodes)
     {
       buf.append( node );
+      buf.append( "\n" );
+    }
+
+    for (XmlExternal external : externals)
+    {
+      buf.append( external );
       buf.append( "\n" );
     }
 
