@@ -152,7 +152,7 @@ public class JdbcNodeRef implements Node,JdbcObject
   }
 
   @Override
-  public boolean isExternal ()
+  public boolean isImportedFromExternal ()
   {
     return !graph.equals( getNode().getGraph() );
   }

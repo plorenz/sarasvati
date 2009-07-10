@@ -180,7 +180,7 @@ public class HibNode implements Node
    * and others which aren't.
    */
   @Override
-  public boolean isExternal()
+  public boolean isImportedFromExternal()
   {
     return false;
   }

@@ -185,7 +185,7 @@ public class JdbcNode implements Node, JdbcObject
   }
 
   @Override
-  public boolean isExternal ()
+  public boolean isImportedFromExternal ()
   {
     return false;
   }

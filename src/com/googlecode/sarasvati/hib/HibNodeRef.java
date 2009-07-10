@@ -176,7 +176,7 @@ public class HibNodeRef implements Node
   }
 
   @Override
-  public boolean isExternal ()
+  public boolean isImportedFromExternal ()
   {
     return !graph.equals( getNode().getGraph() );
   }
