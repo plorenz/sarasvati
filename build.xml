@@ -195,7 +195,7 @@
         <include name="src/**"/>
         <include name="visual/**"/>
         <include name="editor/**"/>
-      	<include name="doc/javadoc/**"/>
+      	<include name="docs/javadoc/**"/>
         <include name="examples/**"/>
         <include name="lang/**"/>
         <include name="lib/*.txt"/>
@@ -355,7 +355,7 @@
     <javadoc access="public"
              author="true"
              classpathref="classpath"
-             destdir="doc/javadoc"
+             destdir="docs/javadoc"
              nodeprecated="false"
              nodeprecatedlist="false"
              noindex="false"
